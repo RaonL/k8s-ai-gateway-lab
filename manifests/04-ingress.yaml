@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-ingress
+  namespace: ai-gateway
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-LB-Node: $server_addr";
+      more_set_headers "X-Gateway-Engine: K3s-NGINX-Router";
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ai.lab.local
+      http:
+        paths:
+          - path: /v1
+            pathType: Prefix
+            backend:
+              service:
+                name: ai-proxy-svc
+                port:
+                  number: 80
