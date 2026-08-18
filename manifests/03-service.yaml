@@ -8,6 +8,7 @@ spec:
   selector:
     app: ai-proxy
   ports:
-    - name: http
-      port: 80
-      targetPort: http
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
